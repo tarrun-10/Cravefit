@@ -1,4 +1,5 @@
 import React from 'react';
+import whiteLogo from '/src/images/white-full-logo.png';
 import { Coffee, Heart } from 'lucide-react';
 
 const Footer = () => {
@@ -12,7 +13,7 @@ const Footer = () => {
           <div className="md:col-span-2">
             <div className="flex items-center space-x-2 mb-2">
               <img 
-                src="/src/images/white full logo.png" 
+                src={whiteLogo}
                 alt="CraveFit Logo" 
                 className="h-24 w-auto"
               />

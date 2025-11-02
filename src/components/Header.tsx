@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import whiteLogo from '/src/images/white-full-logo.png';
 import { Menu, X, Coffee } from 'lucide-react';
 
 const Header = () => {
@@ -28,7 +29,7 @@ const Header = () => {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center space-x-2">
             <img 
-              src="/src/images/white full logo.png" 
+              src={whiteLogo} 
               alt="CraveFit Logo" 
               className="h-12 w-auto"
             />
