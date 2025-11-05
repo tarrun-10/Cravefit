@@ -53,8 +53,8 @@ export default async function handler(req, res) {
 
   // Send notification email
   await resend.emails.send({
-    from: "no-reply@yourdomain.com",
-    to: "youremail@gmail.com",
+    from: "tarrun.official@gmail.com",
+    to: "tarrunkripa@gmail.com",
     subject: "New Partner Inquiry",
     text: `Name: ${name}\nPhone: ${phone}\nEmail: ${email}`,
   });
