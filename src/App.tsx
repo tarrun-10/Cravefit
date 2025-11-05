@@ -99,14 +99,16 @@ function App() {
 
                 const data = await response.json();
 
-                if (data.ok) {
+                              if (data && data.ok) {
                   alert("✅ Thank you! We’ll get in touch soon.");
                   e.currentTarget.reset();
-                } else {
+                } else if (data && data.error) {
                   alert("⚠️ " + data.error);
+                } else {
+                  alert("⚠️ Unexpected server response.");
                 }
               } catch (err) {
-                console.error(err);
+                console.error("Network error:", err);
                 alert("❌ Network error. Try again later.");
               }
             }}
