@@ -80,75 +80,47 @@ function App() {
               Request Callback
             </button>
           </form> */}
-              <form
-              className="flex flex-col gap-4 max-w-md mx-auto"
-              onSubmit={async (e) => {
-                e.preventDefault();
+                        <form
+            className="flex flex-col gap-4 max-w-md mx-auto"
+            onSubmit={async (e) => {
+              e.preventDefault();
 
-                // Create a FormData object
-                const formData = new FormData(e.currentTarget);
+              const formData = new FormData(e.currentTarget);
+              const name = formData.get("name");
+              const phone = formData.get("phone");
+              const email = formData.get("email");
 
-                // Get values by their `name` attributes
-                const name = formData.get("name");
-                const phone = formData.get("phone");
-                const email = formData.get("email");
+              try {
+                const response = await fetch("/api/partner", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ name, phone, email }),
+                });
 
-                // Validate
-                if (!name || !phone || !email) {
-                  alert("Please fill in all fields.");
-                  return;
+                const data = await response.json();
+
+                if (data.ok) {
+                  alert("✅ Thank you! We’ll get in touch soon.");
+                  e.currentTarget.reset();
+                } else {
+                  alert("⚠️ " + data.error);
                 }
-
-                try {
-                  const response = await fetch("/api/partner", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name, phone, email }),
-                  });
-
-                  const data = await response.json();
-                  if (data.ok) {
-                    alert("✅ Thank you! We'll get in touch soon.");
-                    e.currentTarget.reset();
-                  } else {
-                    alert("⚠️ " + data.error);
-                  }
-                } catch (err) {
-                  console.error(err);
-                  alert("❌ Something went wrong. Please try again later.");
-                }
-              }}
+              } catch (err) {
+                console.error(err);
+                alert("❌ Network error. Try again later.");
+              }
+            }}
+          >
+            <input name="name" placeholder="Name" required className="border rounded px-4 py-2 text-black" />
+            <input name="phone" placeholder="Mobile Number" required className="border rounded px-4 py-2 text-black" />
+            <input name="email" placeholder="Email Address" required className="border rounded px-4 py-2 text-black" />
+            <button
+              type="submit"
+              className="mt-4 px-6 py-2 bg-yellow-500 text-black rounded hover:bg-yellow-600 font-semibold shadow"
             >
-              <input
-                name="name"
-                type="text"
-                placeholder="Name"
-                required
-                className="border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500 text-black"
-              />
-              <input
-                name="phone"
-                type="tel"
-                placeholder="Mobile Number"
-                required
-                className="border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500 text-black"
-              />
-              <input
-                name="email"
-                type="email"
-                placeholder="Email Address"
-                required
-                className="border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500 text-black"
-              />
-              <button
-                type="submit"
-                className="mt-4 px-6 py-2 bg-yellow-500 text-black rounded hover:bg-yellow-600 font-semibold shadow"
-              >
-                Request Callback
-              </button>
-            </form>
-
-
+              Request Callback
+            </button>
+          </form>
         </div>
       </section>
 
