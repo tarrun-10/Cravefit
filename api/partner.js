@@ -35,29 +35,3 @@ export default async function handler(req, res) {
     res.status(500).json({ ok: false, error: "Server error" });
   }
 }
-// import { createClient } from "@supabase/supabase-js";
-// import { Resend } from "resend";
-
-// const supabase = createClient(
-//   process.env.SUPABASE_URL,
-//   process.env.SUPABASE_SERVICE_ROLE_KEY
-// );
-// const resend = new Resend(process.env.RESEND_API_KEY);
-
-// export default async function handler(req, res) {
-//   if (req.method !== "POST") return res.status(405).json({ ok: false });
-
-//   const { name, phone, email } = req.body;
-//   const { error } = await supabase.from("partners").insert([{ name, phone, email }]);
-//   if (error) return res.status(500).json({ ok: false });
-
-//   // Send notification email
-//   await resend.emails.send({
-//   from: "Cravy <onboarding@resend.dev>",
-//   to: "tarrunkripa@gmail.com",
-//   subject: "New Partner Inquiry",
-//   text: `Name: ${name}\nPhone: ${phone}\nEmail: ${email}`,
-// });
-
-//   res.status(200).json({ ok: true });
-// }
