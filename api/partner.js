@@ -42,22 +42,56 @@ const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
+
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") return res.status(405).json({ ok: false });
+  // ✅ Allow only POST
+  if (req.method !== "POST") {
+    return res.status(405).json({ ok: false, error: "Method not allowed" });
+  }
 
-  const { name, phone, email } = req.body;
-  const { error } = await supabase.from("partners").insert([{ name, phone, email }]);
-  if (error) return res.status(500).json({ ok: false });
+  try {
+    const { name, phone, email } = req.body;
 
-  // Send notification email
-  await resend.emails.send({
-  from: "Cravy <onboarding@resend.dev>",
-  to: "tarrunkripa@gmail.com",
-  subject: "New Partner Inquiry",
-  text: `Name: ${name}\nPhone: ${phone}\nEmail: ${email}`,
-});
+    // ✅ Validate input
+    if (!name || !phone || !email) {
+      return res.status(400).json({ ok: false, error: "Missing fields" });
+    }
 
-  res.status(200).json({ ok: true });
+    // ✅ Insert into Supabase
+    const { error } = await supabase
+      .from("partners")
+      .insert([{ name, phone, email }]);
+
+    if (error) {
+      console.error("Supabase error:", error);
+      return res
+        .status(500)
+        .json({ ok: false, error: "Database insert failed" });
+    }
+
+    // ✅ Try to send email, but don’t crash if it fails
+    try {
+      await resend.emails.send({
+        from: "Cravy <onboarding@resend.dev>", // free verified sender
+        to: "tarrunkripa@gmail.com",
+        subject: "New Partner Inquiry",
+        text: `Name: ${name}\nPhone: ${phone}\nEmail: ${email}`,
+      });
+    } catch (emailError) {
+      console.error("Resend error:", emailError);
+      // Don’t block user — still mark as successful
+      return res
+        .status(200)
+        .json({ ok: true, warning: "Email failed but data saved." });
+    }
+
+    // ✅ Everything worked
+    return res.status(200).json({ ok: true });
+  } catch (err) {
+    console.error("Unexpected error:", err);
+    return res.status(500).json({ ok: false, error: "Server error" });
+  }
 }
+
