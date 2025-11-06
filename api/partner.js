@@ -6,7 +6,8 @@ const supabase = createClient(
 );
 
 export default async function handler(req, res) {
-  // Allow only POST requests
+  console.log("📩 Partner API hit:", req.method);
+
   if (req.method !== "POST") {
     return res.status(405).json({ ok: false, error: "Method not allowed" });
   }
@@ -14,24 +15,21 @@ export default async function handler(req, res) {
   try {
     const { name, phone, email } = req.body;
 
-    // Validate inputs
     if (!name || !phone || !email) {
-      return res.status(400).json({ ok: false, error: "All fields are required" });
+      return res.status(400).json({ ok: false, error: "Missing fields" });
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return res.status(400).json({ ok: false, error: "Invalid email address" });
-    }
-
-    // Insert into Supabase
     const { error } = await supabase.from("partners").insert([{ name, phone, email }]);
-    if (error) throw error;
 
-    // Success
-    res.status(200).json({ ok: true, message: "Submitted successfully!" });
+    if (error) {
+      console.error("Supabase error:", error);
+      return res.status(500).json({ ok: false, error: "Database insert failed" });
+    }
+
+    console.log("✅ Insert successful:", { name, phone, email });
+    return res.status(200).json({ ok: true });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ ok: false, error: "Server error" });
+    console.error("❌ Server crash:", err);
+    return res.status(500).json({ ok: false, error: "Server error" });
   }
 }
