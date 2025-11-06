@@ -91,7 +91,7 @@ function App() {
               const email = formData.get("email");
 
               try {
-                const response = await fetch("/api/partner", {
+                const response = await fetch("https://yourapp.vercel.app/api/partner", {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({ name, phone, email }),
