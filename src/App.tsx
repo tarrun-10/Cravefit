@@ -91,7 +91,7 @@ function App() {
               const email = formData.get("email");
 
               try {
-                const response = await fetch("https://yourapp.vercel.app/api/partner", {
+                const response = await fetch("/api/partner", {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({ name, phone, email }),
@@ -108,8 +108,8 @@ function App() {
                   alert("⚠️ Unexpected server response.");
                 }
               } catch (err) {
-                console.error("Network error:", err);
-                alert("❌ Network error. Try again later.");
+                // console.error("Network error:", err);
+                // alert("❌ Network error. Try again later.");
               }
             }}
           >
